@@ -2,6 +2,15 @@ const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({ port: 1337 });
 
+let server = http.createServer(function(request, response) {});
+
+server.listen(1338, function() {});
+
+let wss = new webSocketServer({
+  // http://tools.ietf.org/html/rfc6455#page-6
+  httpServer: server
+});
+
 let clients = [];
 
 wss.on('connection', (ws, req) => {
