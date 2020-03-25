@@ -1,7 +1,8 @@
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 1337 });
-
+const port = 1337;
+const wss = new WebSocket.Server({ port });
+console.log("running on " + port)
 let clients = [];
 
 wss.on('connection', (ws, req) => {
