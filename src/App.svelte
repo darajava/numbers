@@ -185,7 +185,7 @@
   }
 
   const connect = () => {
-    socket = new WebSocket(`ws://darajava.ie:1337/${roomId}/${userId}/${name}`);
+    socket = new WebSocket(`wss://darajava.ie:1337/socket/${roomId}/${userId}/${name}`);
 
     socket.onopen = (event) => {
       console.log("populateory", {

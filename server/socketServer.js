@@ -6,7 +6,7 @@ let clients = [];
 
 wss.on('connection', (ws, req) => {
   let lastRoundPoints = 0;
-  var [_, roomId, userId, name] = req.url.split("/")
+  var [_, _,roomId, userId, name] = req.url.split("/")
   if (!clients[roomId]) {
     clients[roomId.toString()] = [];
   }
