@@ -185,7 +185,7 @@
   }
 
   const connect = () => {
-    socket = new WebSocket(`ws://localhost:1337/${roomId}/${userId}/${name}`);
+    socket = new WebSocket(`ws://darajava.ie:1337/${roomId}/${userId}/${name}`);
 
     socket.onopen = (event) => {
       console.log("populateory", {
@@ -245,7 +245,6 @@
 
   const setName = (newName) => {
     name = newName;
-    alert();
     connect();
   }
 
@@ -271,7 +270,7 @@
     target={target}
     score={score}
     closest={closest}
-    name="Dara"
+    name="dara"
     reset={reset}
     backspace={backspace}
     save={save}
