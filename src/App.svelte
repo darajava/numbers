@@ -181,7 +181,7 @@
     intermission = points;
     setTimeout(() => {
       intermission = false;
-    }, 1000);
+    }, 3000);
   }
 
   const connect = () => {

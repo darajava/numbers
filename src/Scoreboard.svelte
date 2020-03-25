@@ -19,7 +19,7 @@
     </span>
   </div>
   <div class="r">
-    &nbsp;-
+    &nbsp;&mdash;
     <span class="score">
       {opponentsOverallScore}
     </span>
