@@ -1,14 +1,6 @@
-let webSocketServer = require('websocket').server;
-let http = require('http');
+const WebSocket = require('ws');
 
-let server = http.createServer(function(request, response) {});
-
-server.listen(1337, function() {});
-
-let wss = new webSocketServer({
-  // http://tools.ietf.org/html/rfc6455#page-6
-  httpServer: server
-});
+const wss = new WebSocket.Server({ port: 1337 });
 
 let clients = [];
 
