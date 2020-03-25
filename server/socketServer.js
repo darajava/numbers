@@ -3,7 +3,7 @@ let http = require('http');
 
 let server = http.createServer(function(request, response) {});
 
-server.listen(1338, function() {});
+server.listen(1337, function() {});
 
 let wss = new webSocketServer({
   // http://tools.ietf.org/html/rfc6455#page-6
