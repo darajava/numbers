@@ -1,6 +1,5 @@
-const WebSocket = require('ws');
-
-const wss = new WebSocket.Server({ port: 1337 });
+let webSocketServer = require('websocket').server;
+let http = require('http');
 
 let server = http.createServer(function(request, response) {});
 
