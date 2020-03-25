@@ -2,12 +2,12 @@ const WebSocket = require('ws');
 
 const port = 1337;
 const wss = new WebSocket.Server({ port });
-console.log("running on " + port)
+console.log("running on " + port:)
 let clients = [];
 
 wss.on('connection', (ws, req) => {
   let lastRoundPoints = 0;
-  var [_, _,roomId, userId, name] = req.url.split("/")
+  var [_,roomId, userId, name] = req.url.split("/")
   if (!clients[roomId]) {
     clients[roomId.toString()] = [];
   }
