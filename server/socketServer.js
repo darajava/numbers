@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 
-const port = 1337;
+const port = 2000;
 const wss = new WebSocket.Server({ port });
 console.log("running on " + port:)
 let clients = [];
