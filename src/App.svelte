@@ -202,8 +202,8 @@
 
   const connect = () => {
     if (socket) return;
-    socket = new WebSocket(`ws://localhost:2000/${roomId}/${userId}/${name}`);
-    // socket = new WebSocket(`wss://darajava.ie/socket/${roomId}/${userId}/${name}`);
+    // socket = new WebSocket(`ws://localhost:2000/${roomId}/${userId}/${name}`);
+    socket = new WebSocket(`wss://darajava.ie/socket/${roomId}/${userId}/${name}`);
 
     socket.onopen = (event) => {
       socket.send(JSON.stringify({
