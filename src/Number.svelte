@@ -8,6 +8,7 @@
   export let small;
   export let highlight;
   export let extraHighlight;
+  export let hint;
 
   let onClickHandler = () => {
     if (!off) {
@@ -52,6 +53,11 @@
 
 <section on:click={onClickHandler} class={classList.join(" ")}>
   {(item && item.item) ? parseFloat(item.item.toFixed(1)) : ''}
+  {#if hint}
+    <div class="hint">
+      {hint}
+    </div>
+  {/if}
 </section>
 
 <style>
@@ -63,6 +69,14 @@
     height: 70px;
     font-size: 22px;
     opacity: 0.8;
+  }
+
+  .hint {
+    font-size: 10px;
+    color: red;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
   }
 
   .n4 {
