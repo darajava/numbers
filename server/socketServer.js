@@ -80,19 +80,19 @@ wss.on('connection', (ws, req) => {
     // Send the new info to all players
     Object.keys(clients[message.roomId]).forEach((uId) => {
       if (clients[message.roomId][uId] && clients[message.roomId][uId].ws) {
-        clients[message.roomId][uId].ws.send(JSON.stringify({
-          type: "populate",
-          data: clients[message.roomId]["items"],
-          overallScores: getOverallScores(message.roomId),
-          names: getPlayerNames(message.roomId)
-        }));
+          clients[message.roomId][uId].ws.send(JSON.stringify({
+            type: "populate",
+            data: clients[message.roomId]["items"],
+            overallScores: getOverallScores(message.roomId),
+            names: getPlayerNames(message.roomId)
+          }))
 
         if (endRound) {
           console.log('33', Math.max(0, 10 - clients[message.roomId][uId].score))
           clients[message.roomId][uId].ws.send(JSON.stringify({
             type: "roundOver",
             data: clients[message.roomId]["items"],
-            points: Math.max(0, 10 - clients[message.roomId][uId].score),
+            score: clients[message.roomId][uId].score,
             overallScores: getOverallScores(message.roomId),
           }));
         }
@@ -132,16 +132,16 @@ wss.on('connection', (ws, req) => {
           }
         */
         Object.keys(clients[message.roomId]).forEach((userId) => {
-         
-          if (message.userId != userId) {
+          if (message.userId !== userId) {
             if (clients[message.roomId][userId]
               && clients[message.roomId][userId].ws) {
               clients[message.roomId][userId].ws.send(JSON.stringify({
                 type: "score",
                 score: message.score,
               }));
-              clients[message.roomId][userId].score = message.score;
             }
+          } else {
+            clients[message.roomId][userId].score = message.score;
           }
         });
         break;
@@ -169,15 +169,16 @@ wss.on('connection', (ws, req) => {
             numbers,
             target,
             name,
-            score
+            score,
           }
         */
 
         delete clients[message.roomId].items;
-        console.log(2234325, message.score);
         console.log(clients[message.roomId][userId].score);
         const otherUserId = getOtherUserId(message.roomId);
         console.log(clients[message.roomId][otherUserId].score);
+
+        clients[message.roomId][userId].score = message.score
         incrementOverallScore(clients[message.roomId], message.userId, message.score);
         incrementOverallScore(clients[message.roomId], otherUserId, clients[message.roomId][otherUserId].score);
         
@@ -196,7 +197,6 @@ wss.on('connection', (ws, req) => {
   const incrementOverallScore = (room, userId, scoreInc) => {
     if (room[userId] && room[userId].overallScore) {
       room[userId].overallScore.overallScore += scoreInc;
-      room[userId].overallScore.scoreInc = scoreInc;
     }
   }
 

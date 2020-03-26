@@ -24,12 +24,12 @@
   }
 
   const generateNewNumbers = () => {
-    return [
-      shuffle(
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
-      ).slice(0, 7), Math.round(Math.random() * 1000),
-    ];
-    // return [shuffle([1, 2, 3, 4, 5, 6, 7]).slice(0, 7), Math.round(Math.random() * 7)];
+    // return [
+    //   shuffle(
+    //     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+    //   ).slice(0, 7), Math.round(Math.random() * 1000),
+    // ];
+    return [shuffle([1, 2, 3, 4, 5, 6, 7]).slice(0, 7), Math.round(Math.random() * 7)];
   }
 
   let [numbers, target] = generateNewNumbers();
@@ -42,7 +42,6 @@
   let savedAnswers = [];
   let score = 0;
   let closest = undefined;
-  let closestItem = 0;
   let currently = 0;
   let opponentsScore = 0;
   let overallScore = 0;
@@ -121,8 +120,8 @@
     savedOffStack = [];
     currently = 0;
     if (!keepClosest) {
+      score = 0;
       closest = undefined;
-      closestItem = 0;
     }
     win();
   }
@@ -168,9 +167,9 @@
   const win = (item = null, win = false) => {
     if (item === target || win) {
       [numbers, target] = generateNewNumbers();
-      socket.send(JSON.stringify({type: "win", score: closest, roomId, userId, name, numbers, target}));
+      socket.send(JSON.stringify({type: "win", score, roomId, userId, name, numbers, target}));
 
-      setTimeout(reset, 0);
+      setTimeout(reset, 3000);
       return;
     }
 
@@ -178,25 +177,26 @@
       closest = 10000;
     }
 
-    if (Math.abs(item - target) < Math.abs(closest - target)) {
-      closest = Math.abs(item - target);
-      score = Math.max(0, 10 - closest);
+    if (item) {
+      if (Math.abs(item - target) < Math.abs(closest - target)) {
+        closest = Math.abs(item - target);
+        score = Math.max(0, 10 - closest);
+      }
     }
-    
-    if (item !== null)
-      currently = item;
 
     socket.send(JSON.stringify({type: "score", score, roomId, userId}));
   }
 
   const giveUp = () => {
-    win(false, true);
+    win(null, true);
   }
 
   const roundOver = (points) => {
     intermission = points;
+    $showText = false;
     setTimeout(() => {
       intermission = false;
+      $showText = true;
     }, 3000);
   }
 
@@ -246,7 +246,7 @@
           break;
 
         case "roundOver":
-          roundOver(message.points);
+          roundOver(message.score);
           break;
       }
     }
@@ -265,7 +265,7 @@
   {/if}
 
   {#if intermission !== false}
-    <EndRound points={intermission} />
+    <EndRound points={score} />
   {/if}
 
   {#if !name}
@@ -274,7 +274,6 @@
   
   <Header
     answerStack={answerStack}
-    currently={closestItem}
     opponentsScore={opponentsScore}
     target={target}
     name="dara"
