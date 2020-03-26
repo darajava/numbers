@@ -7,11 +7,9 @@
 
 <div>
   {#if items}
-    <Number extraHighlight={paintFirst} small number={items[0] && items[0].item} />
+    <Number extraHighlight={paintFirst} small item={items[0]} />
     <Symbol background symbol={items[1] && items[1].item} />
-    <Number small number={items[2] && items[2].item} />
-    <Symbol noBorder background symbol="=" />
-    <Number highlight small number={items[3] && items[3].item} />
+    <Number small item={items[2]} />
   {/if}
 </div>
 

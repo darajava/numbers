@@ -24,12 +24,17 @@
   }
 
   const generateNewNumbers = () => {
-    return [
-      shuffle(
+    let theseNumbers = shuffle(
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
-      ).slice(0, 7), Math.round(Math.random() * 1000),
-    ];
-    return [shuffle([1, 2, 3, 4, 5, 6, 7]).slice(0, 7), Math.round(Math.random() * 7)];
+    ).slice(0, 7);
+    let thisTarget = Math.round(Math.random() * 900) + 101;
+
+    theseNumbers = shuffle([1, 2, 3, 4, 5, 6, 7]);
+    thisTarget = 0;
+
+    console.log(theseNumbers.map(n => {return {item: n, id: Math.random()}}), "helo");
+
+    return [theseNumbers.map(n => {return {item: n, id: Math.random()}}), thisTarget];
   }
 
   let [numbers, target] = generateNewNumbers();
@@ -85,22 +90,23 @@
   }
 
   const pushAnswer = (item, isSymbol = false, isFromSaved = false) => {
+    console.log("pushAnswer", item);
     const audio = new Audio('thud.mp3');
     if (answerStack.length % 2 === 0) {
       if (!isSymbol) {
-        answerStack = [...answerStack, {item, isSymbol, isFromSaved}];
-        offStack = [...offStack, {item}];
+        answerStack = [...answerStack, item];
+        offStack = [...offStack, item];
         if (isFromSaved) {
-          savedOffStack = [...savedOffStack, {item, isFromSaved}];
+          savedOffStack = [...savedOffStack, item];
         }
         audio.play();
       }
     } else {
       if (isSymbol) {
-        answerStack = [...answerStack, {item, isSymbol, isFromSaved}];
-        offStack = [...offStack, {item}];
+        answerStack = [...answerStack, item];
+        offStack = [...offStack, item];
         if (isFromSaved) {
-          savedOffStack = [...savedOffStack, {item, isFromSaved}];
+          savedOffStack = [...savedOffStack, item];
         }
         audio.play();
       }
@@ -110,6 +116,9 @@
       item = calculate(answerStack);
       win(item);
       answerStack = [...answerStack, {item}, {item}];
+      console.error(savedOffStack);
+      save();
+      answerStack = [];
     }
   }
 
@@ -127,7 +136,7 @@
   }
 
   const lose = () => {
-    reset();
+    reset();o
   }
 
   const backspace = () => {
@@ -160,28 +169,28 @@
     const i = answerStack.length - 1;
     if (!answerStack[i - 1]) return;
     const topNumber = answerStack[i - 1] && (answerStack[i].isSymbol ? answerStack[i - 1] : answerStack[i])
-    savedAnswers = [...savedAnswers, {item: topNumber.item, stack: answerStack}]
+    savedAnswers = [...savedAnswers, {item: topNumber.item, stack: answerStack, id: Math.random()}]
     answerStack = [];
   }
 
   const win = (item = null, win = false) => {
+    if (closest === undefined) {
+      closest = 10000;
+    }
+
+    if (item !== null) {
+      if (Math.abs(item - target) < Math.abs(closest - target)) {
+        closest = Math.abs(item - target);
+        score = Math.max(0, 10 - closest);
+      }
+    }
+
     if (item === target || win) {
       [numbers, target] = generateNewNumbers();
       socket.send(JSON.stringify({type: "win", score, roomId, userId, name, numbers, target}));
 
       setTimeout(reset, 3000);
       return;
-    }
-
-    if (closest === undefined) {
-      closest = 10000;
-    }
-
-    if (item) {
-      if (Math.abs(item - target) < Math.abs(closest - target)) {
-        closest = Math.abs(item - target);
-        score = Math.max(0, 10 - closest);
-      }
     }
 
     socket.send(JSON.stringify({type: "score", score, roomId, userId}));
@@ -202,8 +211,8 @@
 
   const connect = () => {
     if (socket) return;
-    // socket = new WebSocket(`ws://localhost:2000/${roomId}/${userId}/${name}`);
-    socket = new WebSocket(`wss://darajava.ie/socket/${roomId}/${userId}/${name}`);
+    socket = new WebSocket(`ws://localhost:2000/${roomId}/${userId}/${name}`);
+    // socket = new WebSocket(`wss://darajava.ie/socket/${roomId}/${userId}/${name}`);
 
     socket.onopen = (event) => {
       socket.send(JSON.stringify({
@@ -276,17 +285,15 @@
     answerStack={answerStack}
     opponentsScore={opponentsScore}
     target={target}
-    name="dara"
     reset={() => reset(true)}
     backspace={backspace}
-    save={save}
     giveUp={giveUp}
   />
   <div class="game">
     <div class="board">
       {#if numbers}
         {#each numbers as number, i}
-          <Number onClick={pushAnswer} number={number} off={!!offStack.find(e => e && e.item == number)} />
+          <Number onClick={pushAnswer} item={number} off={!!offStack.find(e => e && e.id == number.id)} />
         {/each}
       {/if}
     </div>
@@ -299,7 +306,10 @@
         <Symbol onClick={pushAnswer} symbol="÷" />
 
         {#each savedAnswers as item, i}
-          <Number onClick={(item) => pushAnswer(item, false, true)} off={!!savedOffStack.find(e => e && e.item === item.item)} number={item.item} small />
+          <Number onClick={(item) => pushAnswer(item, false, true)} item={item} off={!!savedOffStack.find(e => {
+            console.error(e);
+            return e && e.id === item.id;
+          })} number={item.item} small />
         {/each}
 
         {#each new Array(Math.max(0, 4 - savedAnswers.length)) as _} 

@@ -19,7 +19,7 @@
 
 </script>
 
-<section on:click={() => onClick(symbol, true)} class={classList.join(" ")} >
+<section on:click={() => onClick({item: symbol}, true)} class={classList.join(" ")} >
   {#if $showText}
     <div>
       &nbsp;{symbol ? symbol : ''}&nbsp;

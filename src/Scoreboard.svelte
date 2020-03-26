@@ -20,13 +20,13 @@
         {name}
       </span> 
       <span class="score">
-        {overallScore}
+        {+overallScore.toFixed(1)}
       </span>
     </div>
       &nbsp;&mdash;&nbsp;
     <div class="r">
       <span class="score">
-        {opponentsOverallScore}
+        {+opponentsOverallScore.toFixed(1)}
       </span>
       <span class={`name ${$showText ? "" : "hide"}`}>
         {opponentsName}
@@ -36,11 +36,11 @@
 
   <div class="holder">
     <div class="l">
-      <span class="small hint">this round:</span> <span class="closest item">{score}</span>
+      <span class="small hint">this round:</span> <span class="closest item">{+score.toFixed(1)}</span>
     </div>
       &nbsp;&mdash;&nbsp;
     <div class="r">
-      <span class="closest item">{opponentsScore}</span>
+      <span class="closest item">{+opponentsScore.toFixed(1)}</span>
     </div>
   </div>
 </section>

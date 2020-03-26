@@ -1,9 +1,10 @@
 <script type="text/javascript">
   export let points;
+  let bakedPoints = points;
 </script>
 
 <div class="end-round">
-  {points ? `${points} points` : "No points"}
+  {bakedPoints ? `${bakedPoints} points` : "No points"}
 
 </div>
 

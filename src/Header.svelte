@@ -35,19 +35,12 @@
 <header>
   <div class="left">
    <div class="answer-box">
-      {#if answerStack}
-        {#each answerStack as item, i}
-          {#if i % 4 === 0}
-            <Answer 
-              paintFirst={i===0}
-              items={answerStack.slice(-i + answerStack.length - answerStack.length % 4)}
-            />
-          {/if}
-        {/each}
-      {/if}
+        <Answer 
+          items={answerStack.slice(0, 4)}
+        />
+
 
       <div class="controls">
-        <Save onClick={save} />
         <Delete onClick={backspace} />
         &nbsp;
         <Reset onClick={reset} />
@@ -112,20 +105,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .answer-box:after {
-    content: '';
-    position : absolute;
-    z-index  : 1;
-    bottom   : 0;
-    left     : 0;
-    pointer-events   : none;
-    background-image : linear-gradient(180deg, 
-                      rgba(255,255,255, 0), 
-                      rgba(255,255,255, 1) 100%);
-    width    : 100%;
-    height   : 55%;
+    justify-content: center;
   }
 
   .controls {

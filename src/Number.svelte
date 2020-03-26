@@ -1,7 +1,8 @@
 <script>
   import { showText } from './stores.js';
 
-  export let number = 0;
+  export let item = {item: undefined};
+  export let number = item.item;
   export let onClick;
   export let off;
   export let small;
@@ -10,9 +11,11 @@
 
   let onClickHandler = () => {
     if (!off) {
-      onClick(number, false);
+      onClick(item, false);
     }
   }
+
+  console.log('"number"', item)
 
   let classList = [];
 
@@ -40,7 +43,7 @@
     }
     
     if (number)
-      classList = [...classList, `n${parseFloat(number.toFixed(1)).toString().length}`]
+      classList = [...classList, `n${parseFloat(item && item.item ? item.item.toFixed(1) : '').toString().length}`]
   }
 
 
@@ -48,7 +51,7 @@
 </script>
 
 <section on:click={onClickHandler} class={classList.join(" ")}>
-  {number ? parseFloat(number.toFixed(1)) : ''}
+  {(item && item.item) ? parseFloat(item.item.toFixed(1)) : ''}
 </section>
 
 <style>
@@ -56,8 +59,8 @@
     color: rgba(0, 0, 0, 0);
   }
   .small {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     font-size: 22px;
     opacity: 0.8;
   }

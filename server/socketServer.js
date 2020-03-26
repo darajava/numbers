@@ -178,7 +178,7 @@ wss.on('connection', (ws, req) => {
         const otherUserId = getOtherUserId(message.roomId);
         console.log(clients[message.roomId][otherUserId].score);
 
-        clients[message.roomId][userId].score = message.score
+        clients[message.roomId][userId].score = message.score;
         incrementOverallScore(clients[message.roomId], message.userId, message.score);
         incrementOverallScore(clients[message.roomId], otherUserId, clients[message.roomId][otherUserId].score);
         
