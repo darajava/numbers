@@ -1,9 +1,12 @@
 <script>
+  import { showText } from './stores.js';
+
   export let number = 0;
   export let onClick;
   export let off;
   export let small;
   export let highlight;
+  export let extraHighlight;
 
   let onClickHandler = () => {
     if (!off) {
@@ -27,6 +30,14 @@
     if (highlight) {
       classList = [...classList, "highlight"]
     }
+
+    if (extraHighlight) {
+      classList = [...classList, "extra-highlight"]
+    }
+
+    if (!$showText) {
+      classList = [...classList, "hide-text"]
+    }
     
     if (number)
       classList = [...classList, `n${parseFloat(number.toFixed(1)).toString().length}`]
@@ -37,10 +48,13 @@
 </script>
 
 <section on:click={onClickHandler} class={classList.join(" ")}>
-  {number ? parseFloat(number.toFixed(1)) : ' '}
+  {number ? parseFloat(number.toFixed(1)) : ''}
 </section>
 
 <style>
+  .hide-text {
+    color: rgba(0, 0, 0, 0);
+  }
   .small {
     width: 50px;
     height: 50px;
@@ -84,8 +98,12 @@
     font-size: 5px;
   }
 
-  .highlight {
+  .highlight, .extra-highlight {
     filter: saturate(2);
+  }
+
+  .extra-highlight {
+    border: 3px dotted #d2d2d2;
   }
 
   .off {

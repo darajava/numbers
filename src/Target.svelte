@@ -2,18 +2,19 @@
   export let number;
   export let currently;
   export let opponentsScore;
+  import { showText } from './stores.js';
+
 </script>
 
-<section>
-  {number}
-  <span class="top">TARGET</span>
-  <span class="bottom">
-    You: {currently ? +currently.toFixed(1) : 0}<br/>
-    Opponent: {opponentsScore}
-  </span>
+<section class={!$showText ? "hide-text" : ""}>
+    {number}
+    <span class="top">TARGET</span>
 </section>
 
 <style>
+  .hide-text {
+    color: rgba(0, 0, 0, 0) !important;
+  }
 
   section:hover {
     filter: brightness(1.3);
@@ -40,9 +41,9 @@
 
   span.top {
     position: absolute;
-    top: 5px;
-    color: white;
-    font-size: 18px;
+    top: 15px;
+    font-size: 42px;
+    opacity: 0.5;
   }
 
   span.bottom {

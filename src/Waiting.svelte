@@ -1,7 +1,16 @@
-<div class="waiting">
-  Waiting for another player
-  <div class="pls">(pls be patient)</div>
-</div>
+<script type="text/javascript">
+  let display = false;
+  setTimeout(() => {
+    display = true;
+  }, 300);
+</script>
+
+{#if display}
+  <div class="waiting">
+    Waiting for another player
+    <div class="pls">(please be patient)</div>
+  </div>
+{/if}
 
 <style type="text/css">
   .waiting {

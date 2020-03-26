@@ -9,7 +9,9 @@
   import Scoreboard from './Scoreboard.svelte';
   import Answer from './Answer.svelte';
   import Box from './Box.svelte';
-
+  
+  import { showText } from './stores.js';
+  
   const shuffle = (a) => {
     var j, x, i;
     for (i = a.length - 1; i > 0; i--) {
@@ -22,8 +24,12 @@
   }
 
   const generateNewNumbers = () => {
-    // return [shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]).slice(0, 7), Math.round(Math.random() * 1000)];
-    return [shuffle([1, 2, 3, 4, 5, 6, 7]).slice(0, 7), Math.round(Math.random() * 7)];
+    return [
+      shuffle(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+      ).slice(0, 7), Math.round(Math.random() * 1000),
+    ];
+    // return [shuffle([1, 2, 3, 4, 5, 6, 7]).slice(0, 7), Math.round(Math.random() * 7)];
   }
 
   let [numbers, target] = generateNewNumbers();
@@ -35,7 +41,8 @@
   let savedOffStack = [];
   let savedAnswers = [];
   let score = 0;
-  let closest = 0;
+  let closest = undefined;
+  let closestItem = 0;
   let currently = 0;
   let opponentsScore = 0;
   let overallScore = 0;
@@ -43,7 +50,6 @@
   let opponentsName = '';
   let waitingForPlayer =  true;
   let intermission = false;
-
 
   let userId = localStorage.getItem("userId");
 
@@ -60,7 +66,7 @@
 
   const calculate = (arr) => {
     let [op1, operator, op2] = arr.slice(-3);
-    console.log(op1, op2, operator)
+
     switch (operator.item) {
       case '+':
         return op1.item + op2.item;
@@ -104,18 +110,21 @@
     if (answerStack.length % 4 === 3) {
       item = calculate(answerStack);
       win(item);
-      console.log(item)
       answerStack = [...answerStack, {item}, {item}];
     }
   }
 
-  const reset = () => {
+  const reset = (keepClosest) => {
     answerStack = [];
     offStack = [];
     savedAnswers = [];
     savedOffStack = [];
     currently = 0;
-    console.log(answerStack);
+    if (!keepClosest) {
+      closest = undefined;
+      closestItem = 0;
+    }
+    win();
   }
 
   const lose = () => {
@@ -154,27 +163,34 @@
     const topNumber = answerStack[i - 1] && (answerStack[i].isSymbol ? answerStack[i - 1] : answerStack[i])
     savedAnswers = [...savedAnswers, {item: topNumber.item, stack: answerStack}]
     answerStack = [];
-    console.log(savedAnswers)
   }
 
-  const win = (item = null) => {
-    if (item === target) {
-        setTimeout(reset, 0);
-        closest = 0;
-        
-        [numbers, target] = generateNewNumbers();
-        socket.send(JSON.stringify({type: "win", roomId, userId, name, numbers, target}));
+  const win = (item = null, win = false) => {
+    if (item === target || win) {
+      [numbers, target] = generateNewNumbers();
+      socket.send(JSON.stringify({type: "win", score: closest, roomId, userId, name, numbers, target}));
 
-        return;
+      setTimeout(reset, 0);
+      return;
     }
 
-    if (Math.abs(target - item) < Math.abs(target - closest)) {
+    if (closest === undefined) {
+      closest = 10000;
+    }
+
+    if (Math.abs(item - target) < Math.abs(closest - target)) {
       closest = Math.abs(item - target);
+      score = Math.max(0, 10 - closest);
     }
     
-    currently = item;
+    if (item !== null)
+      currently = item;
 
-    socket.send(JSON.stringify({type: "score", score: item, roomId, userId}));
+    socket.send(JSON.stringify({type: "score", score, roomId, userId}));
+  }
+
+  const giveUp = () => {
+    win(false, true);
   }
 
   const roundOver = (points) => {
@@ -185,17 +201,11 @@
   }
 
   const connect = () => {
-    socket = new WebSocket(`wss://darajava.ie/socket/${roomId}/${userId}/${name}`);
+    if (socket) return;
+    socket = new WebSocket(`ws://localhost:2000/${roomId}/${userId}/${name}`);
+    // socket = new WebSocket(`wss://darajava.ie/socket/${roomId}/${userId}/${name}`);
 
     socket.onopen = (event) => {
-      console.log("populateory", {
-        type: "populate",
-        numbers,
-        target,
-        roomId,
-        userId,
-        name,
-      })
       socket.send(JSON.stringify({
         type: "populate",
         numbers,
@@ -215,19 +225,18 @@
           opponentsScore = message.score;
           break;
         case "populate":
-          console.log("populate", message);
           target = message.data.target;
-
+          setTimeout(() => {
+            $showText = true;
+          }, 200);
           numbers = message.data.numbers;
           currently = 0;
           opponentsScore = 0;
 
-          console.log('xxx', message.overallScores);
           opponentsOverallScore = message.overallScores.find((e) => e.userId !== userId).overallScore || 0;
           overallScore = message.overallScores.find((e) => e.userId === userId).overallScore || 0;
           break;
         case "playerRegistered":
-        console.error(message);
           try {
             opponentsName = message.names.find(message => message.userId !== userId).name;
             waitingForPlayer = false;
@@ -251,7 +260,7 @@
 </script>
 
 <main>
-  {#if name && waitingForPlayer}
+  {#if waitingForPlayer}
     <Waiting />
   {/if}
 
@@ -265,15 +274,14 @@
   
   <Header
     answerStack={answerStack}
-    currently={currently}
+    currently={closestItem}
     opponentsScore={opponentsScore}
     target={target}
-    score={score}
-    closest={closest}
     name="dara"
-    reset={reset}
+    reset={() => reset(true)}
     backspace={backspace}
     save={save}
+    giveUp={giveUp}
   />
   <div class="game">
     <div class="board">
@@ -307,7 +315,10 @@
     name={name}
     opponentsName={opponentsName}
     overallScore={overallScore}
+    score={score}
+    opponentsScore={opponentsScore}
     opponentsOverallScore={opponentsOverallScore}
+    onNameClick={() => name = undefined}
   />
 
 </main>

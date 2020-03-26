@@ -1,31 +1,47 @@
 <script>
-  import { fade } from 'svelte/transition';
+  import { showText } from './stores.js';
   
   export let overallScore;  
   export let opponentsOverallScore;
+  export let onNameClick;
   export let name;
   export let opponentsName;
+
+  export let score;
+  export let opponentsScore;
   let fade2 = false;
 
 </script>
 
 <section>
-  <div class="l">
-    <span class="name">
-      {name}
-    </span> 
-    <span class="score">
-      {overallScore}
-    </span>
+  <div class="holder">
+    <div class="l">
+      <span class={`name ${$showText ? "" : "hide"}`} on:click={onNameClick}>
+        {name}
+      </span> 
+      <span class="score">
+        {overallScore}
+      </span>
+    </div>
+      &nbsp;&mdash;&nbsp;
+    <div class="r">
+      <span class="score">
+        {opponentsOverallScore}
+      </span>
+      <span class={`name ${$showText ? "" : "hide"}`}>
+        {opponentsName}
+      </span> 
+    </div>
   </div>
-  <div class="r">
-    &nbsp;&mdash;
-    <span class="score">
-      {opponentsOverallScore}
-    </span>
-    <span class="name">
-      {opponentsName} <span class="fade-up">has joined!</span>
-    </span> 
+
+  <div class="holder">
+    <div class="l">
+      <span class="small hint">this round:</span> <span class="closest item">{score}</span>
+    </div>
+      &nbsp;&mdash;&nbsp;
+    <div class="r">
+      <span class="closest item">{opponentsScore}</span>
+    </div>
   </div>
 </section>
 
@@ -33,8 +49,17 @@
   section {
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
   }  
+
+  .holder {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+
   .l, .r {
     width: 50%;
     display: flex;
@@ -59,30 +84,32 @@
     font-size: 28px;
   }
 
-
-  .fade-up {
-    animation: 2s fadeUp linear;
-    position: relative;
-    opacity: 0;
-    font-size: 20px;
+  .name.hide {
+    display: none;
   }
 
-  @keyframes fadeUp {
-    from {
-      top: 0;
-      opacity: 1;
-    }
+  .hint {
+    color: #666;
+    font-size: 18px;
+    margin: 0 5px;
+  }
 
-    90% {
-      opacity: 0.8;
-      top: 0;
-    }
+  .hint.small {
+    font-size: 14px;
+    color: #888;
+  }
 
-    to {
-      top: -200px;
-      opacity: 0;
-    }
+  .closest {
+    font-size: 26px;
+    color: #666;
+  }
 
-  } 
+  .closest.item {
+    font-size: 20px;
+    color: #888;
+
+  }
+
+
 
 </style>

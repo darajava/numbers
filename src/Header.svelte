@@ -7,7 +7,7 @@
   export let opponentsScore;
   export let answerStack;
   export let target;
-  export let reset, backspace, save, lose;
+  export let reset, backspace, save, giveUp;
   import moment from 'moment';
   import Target from './Target.svelte';
   import Answer from './Answer.svelte';
@@ -38,7 +38,10 @@
       {#if answerStack}
         {#each answerStack as item, i}
           {#if i % 4 === 0}
-            <Answer items={answerStack.slice(-i + answerStack.length - answerStack.length % 4)}/>
+            <Answer 
+              paintFirst={i===0}
+              items={answerStack.slice(-i + answerStack.length - answerStack.length % 4)}
+            />
           {/if}
         {/each}
       {/if}
@@ -48,7 +51,7 @@
         <Delete onClick={backspace} />
         &nbsp;
         <Reset onClick={reset} />
-        <GiveUp onClick={lose} />
+        <GiveUp onClick={giveUp} />
       </div>
     </div>
   </div>

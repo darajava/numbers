@@ -4,6 +4,7 @@
 
 <div class="end-round">
   {points ? `${points} points` : "No points"}
+
 </div>
 
 <style type="text/css">

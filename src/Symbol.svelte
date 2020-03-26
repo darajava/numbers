@@ -1,4 +1,6 @@
 <script>
+  import {showText} from './stores.js';
+
   export let symbol;
   export let onClick;
   export let background;
@@ -18,9 +20,11 @@
 </script>
 
 <section on:click={() => onClick(symbol, true)} class={classList.join(" ")} >
-  <div>
-    &nbsp;{symbol ? symbol : ''}&nbsp;
-  </div>
+  {#if $showText}
+    <div>
+      &nbsp;{symbol ? symbol : ''}&nbsp;
+    </div>
+  {/if}
 
 
 </section>
