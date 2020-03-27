@@ -7,9 +7,9 @@
 
 <div>
   {#if items}
-    <Number extraHighlight={paintFirst} small item={items[0]} />
+    <Number extraHighlight={paintFirst} item={items[0]} light/>
     <Symbol background symbol={items[1] && items[1].item} />
-    <Number small item={items[2]} />
+    <Number item={items[2]} light />
   {/if}
 </div>
 
@@ -17,6 +17,8 @@
 <style>
   div {
     display: flex;
-    align-items: center;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
   }
 </style>

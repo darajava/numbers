@@ -23,8 +23,8 @@
   section {
     position: relative;
 
-    width: 240px;
-    height: 240px;
+    width: 180px;
+    height: 180px;
 
     font-size: 82px;
 
@@ -42,7 +42,7 @@
   span.top {
     position: absolute;
     top: 15px;
-    font-size: 42px;
+    font-size: 26px;
     opacity: 0.5;
   }
 

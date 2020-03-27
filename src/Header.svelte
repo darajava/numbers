@@ -2,7 +2,7 @@
   export let name;
   export let startTime;
   export let score;
-  export let closest;
+  export let closestItem = 0;
   export let currently;
   export let opponentsScore;
   export let answerStack;
@@ -14,7 +14,6 @@
   import Reset from './Reset.svelte';
   import GiveUp from './GiveUp.svelte';
   import Box from './Box.svelte';
-  import Delete from './Delete.svelte';
   import Save from './Save.svelte';
   import { onMount } from 'svelte';
  
@@ -41,10 +40,10 @@
 
 
       <div class="controls">
-        <Delete onClick={backspace} />
-        &nbsp;
-        <Reset onClick={reset} />
         <GiveUp onClick={giveUp} />
+        <div class="closest">
+          Closest: {(closestItem && closestItem.item) ? closestItem.item : 0}
+        </div>
       </div>
     </div>
   </div>
@@ -60,7 +59,7 @@
 <style>
   header {
     display: flex;
-    width: 100vw;
+    width: 100%;
   }
 
   .left, .right {
@@ -97,8 +96,8 @@
   }
   .answer-box {
     margin-left: auto;
-    max-height: 240px;
-    min-height: 240px;
+    max-height: 180px;
+    min-height: 180px;
     width: 100%;
     overflow: hidden;
     position: relative;
@@ -109,9 +108,14 @@
   }
 
   .controls {
-    position: absolute;
     bottom: 10px;
     z-index: 1000;
+    text-align: center;
+  }
+
+  .closest {
+    font-size: 14px;
+    opacity: 0.7;
   }
 
   .controls button {

@@ -1,11 +1,13 @@
 <script>
   import {showText} from './stores.js';
+  import Hint from './Hint.svelte';
 
   export let symbol;
   export let onClick;
   export let background;
   export let highlight;
   export let noBorder;
+  export let hint;
 
   let classList = [];
 
@@ -19,12 +21,16 @@
 
 </script>
 
-<section on:click={() => onClick({item: symbol}, true)} class={classList.join(" ")} >
-  {#if $showText}
-    <div>
-      &nbsp;{symbol ? symbol : ''}&nbsp;
-    </div>
-  {/if}
+<section on:click={() => onClick({item: symbol, isSymbol: true})} class={classList.join(" ")} >
+  <div class="content">
+    {#if $showText}
+      <div>
+        &nbsp;{symbol ? symbol : ''}&nbsp;
+      </div>
+
+      <Hint hint={hint} />
+    {/if}
+  </div>
 
 
 </section>
@@ -38,8 +44,6 @@
     border: 2px #999 dashed;
     font-size: 36px;
     border-radius: 10px;
-    width: 30px;
-    height: 30px;
   }
 
   .no-border {
@@ -61,24 +65,38 @@
   }
 
   section {
-    width: 50px;
-    height: 50px;
+    flex: 1;
+    position: relative;
+    margin: 10px;
 
-    font-size: 58px;
 
     display: inline-flex;
     justify-content: center;
     align-items: center;
-
-    background-color: #3b6d3a;
+    background-color: #37793c;
     box-shadow: 1px 1px 3px grey;
 
     color: white;
     margin: 10px;
+    transition: background-color 1.8s;
+    position: relative;
+    font-size: 42px;
   }
 
-  div {
-    position: relative;
-    top: -2px;
+  section:before {
+    content:     "";
+    display:     block;
+    padding-top: 100%; /* initial ratio of 1:1*/
+  }
+
+  .content {
+    position: absolute;
+    top:      -7px;
+    left:     0;
+    bottom:   0;
+    right:    0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

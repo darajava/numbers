@@ -2,9 +2,7 @@
 </script>
 
 <section>
-  &nbsp;
-
-
+  <div class="content"></div>
 </section>
 
 <style>
@@ -13,33 +11,37 @@
 
   }
 
-
   section {
-    transition: transform 0.2s;
-    cursor: pointer;
-    background-color: white;
-    color: #333;
-    box-shadow: none;
-    border: 1px #999 dotted;
-    border-radius: 5px;
-  }
+    flex: 1;
+    position: relative;
+    margin: 10px;
 
-
-  section {
-    width: 50px;
-    height: 50px;
-
-    font-size: 58px;
 
     display: inline-flex;
     justify-content: center;
     align-items: center;
 
-
     color: white;
     margin: 10px;
+    transition: background-color 1.8s;
+    position: relative;
+    font-size: 42px;
   }
 
+  section:before {
+    content:     "";
+    display:     block;
+    padding-top: 100%; /* initial ratio of 1:1*/
+  }
+
+  .content {
+    position: absolute;
+    top:      0;
+    left:     0;
+    bottom:   0;
+    right:    0;
+    border: 1px dotted grey;
+  }
   div {
     position: relative;
     top: -2px;

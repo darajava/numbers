@@ -76,12 +76,12 @@
 
   .score {
     font-weight: bold;
-    font-size: 58px;
+    font-size: 68px;
     margin: 5px;
   }
 
   .name {
-    font-size: 28px;
+    font-size: 38px;
   }
 
   .name.hide {
