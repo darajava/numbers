@@ -16,7 +16,7 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "sirv-cli": "^0.4.4",
     "svelte-icons": "^2.1.0",
     "websocket": "^1.0.31"
